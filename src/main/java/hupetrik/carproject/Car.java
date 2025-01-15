@@ -1,7 +1,10 @@
 package hupetrik.carproject;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.zip.DataFormatException;
 
 public class Car {
@@ -12,10 +15,13 @@ public class Car {
     public Car(String licensePlateNumber, String name, Integer year) throws DataFormatException {
         this.licensePlateNumber = licensePlateNumber;
         this.name = name;
-        Date date = new Date();
-        Integer currentYear = date.getYear();
-        if (date.getYear() <1950 || date.getYear() > currentYear){
-            throw new DataFormatException("IDK");
+
+        Calendar date = new GregorianCalendar();
+
+
+        Integer currentYear = date.get(Calendar.YEAR);
+        if (year <1950 || year > currentYear){
+            throw new DataFormatException(year+"||" + currentYear);
         }
 
         this.year = year;

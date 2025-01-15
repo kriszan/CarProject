@@ -20,7 +20,7 @@ import java.util.zip.DataFormatException;
 
 public class HelloController {
 
-    private ArrayList<Car> dataToBeSaved;
+    private ArrayList<Car> dataToBeSaved = new ArrayList<>();
 
     @FXML
     private TextArea licensePlateNumberInput;
@@ -97,43 +97,36 @@ public class HelloController {
                 BufferedReader reader = new BufferedReader(new FileReader(file));
                 ObservableList<Car> cars = FXCollections.observableArrayList();
 
-                do {
-                    String[] data = reader.readLine().split(";");
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(";");
                     cars.add(new Car(data[0], data[1], Integer.valueOf(data[2])));
-                } while (reader.readLine() != null);
+                }
                 reader.close();
 
-                try {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("table-view.fxml"));
-                    Parent root1 = (Parent) fxmlLoader.load();
-                    Stage stage = new Stage();
-                    stage.initModality(Modality.APPLICATION_MODAL);
-                    stage.initStyle(StageStyle.UNDECORATED);
-                    stage.setTitle("ABC");
-                    stage.setScene(new Scene(root1));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("table-view.fxml"));
+                Parent root1 =  fxmlLoader.load();
+                Stage stage = new Stage();
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.initStyle(StageStyle.UNDECORATED);
+                stage.setTitle("Data");
+                stage.setScene(new Scene(root1));
 
-                    TableView tableView = new TableView<>();
-                    TableColumn licensePlateNumberColumn = new TableColumn("licensePlateNumber");
-                    licensePlateNumberColumn.setCellValueFactory(new PropertyValueFactory<>("licensePlateNumber"));
+                TableView<Car> tableView = (TableView<Car>) fxmlLoader.getNamespace().get("tableView");
+                TableColumn<Car, String> licensePlateNumberColumn = new TableColumn<>("licensePlateNumber");
+                licensePlateNumberColumn.setCellValueFactory(new PropertyValueFactory<>("licensePlateNumber"));
 
-                    TableColumn nameColumn = new TableColumn("name");
-                    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+                TableColumn<Car, String> nameColumn = new TableColumn<>("name");
+                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-                    TableColumn yearColumn = new TableColumn("year");
-                    yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
+                TableColumn<Car, Integer> yearColumn = new TableColumn<>("year");
+                yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
 
-                    tableView.getColumns().addAll(licensePlateNumberColumn, nameColumn, yearColumn);
-                    tableView.setItems(cars);
-                    stage.show();
-                } finally {
-
-                }
-
-
+                tableView.getColumns().addAll(licensePlateNumberColumn, nameColumn, yearColumn);
+                tableView.setItems(cars);
+                stage.show();
             } catch (Exception ex) {
                 ex.printStackTrace();
-            } finally {
-
             }
         } else if (result.get() == noButton) {
 
